@@ -16,7 +16,7 @@ if __name__ == "__main__":
     test_path = Path("test")
     
     # Main Queue
-    queue = [] #Queue()
+    queue = Queue()
 
     #Testing
     for file in walk(test_path):
@@ -25,16 +25,31 @@ if __name__ == "__main__":
             
             # Text Files
             case ".txt" | ".md" | ".log":
-                queue.append(RawText(file))
+                queue.put(RawText(file))
             
-            case ".docx":
+            # Structured Text
+            case ".json" | ".xml" | ".csv" | ".tsv":
+                queue.put(StructuredText(file))
+            
+            # Documents
+            case ".docx" | ".doc" | ".pptx" | ".ppt":
+                queue.put(Document(file))
+            
+            # Images
+            case ".png" | ".jpg" | ".jpeg" | ".gif" | ".bmp" | ".tiff" | ".webp":
+                queue.put(Image(file))
             
             # Default
             case _:
-                queue.append(UnknownContent(file))
+                queue.put(UnknownContent(file))
 
-    # Process Queue
-    for item in queue:
-        print(repr(item))
+    # Thread Pool
+    # TODO Implement Threadpool to Dequeue and Process Files
+    # TODO Implement Results Aggregator
+    # TODO Vector Database to Store Results?
+    num_threads = 4
+    
+    
+        
 
 

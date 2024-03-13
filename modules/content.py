@@ -8,6 +8,8 @@ import csv
 import json
 import xmltodict
 from docx import Document as Docx
+from PIL import Image
+import pytesseract
 
 from modules.temporary_copy import with_temporary_copy
 
@@ -85,46 +87,48 @@ class Document(FileRecord):
 
     @with_temporary_copy
     def _process(self):
-        
+
         match self.path.type:
-            
+
             case ".docx" | ".doc":
                 doc = Docx(self.path)
                 return "\n".join([p.text for p in doc.paragraphs])
 
             case ".pptx" | ".ppt":
-                pdf 
-                
-                
-        
-        pass
+                raise NotImplementedError("PowerPoint files are not yet supported")
 
 
 @dataclass
 class Image(FileRecord):
-    """Image content (JPG, PNG, GIF)"""
-
-    def ocr(self):
-        pass
+    """Analyze Image Content with OCR (JPG, PNG, WEBP)"""
 
     @with_temporary_copy
     def _process(self):
-        pass
+        image = Image.open(self.path)
 
+        # Attempt to Rotate The Image If It's Not Upright
+        try:
+            osd = pytesseract.image_to_osd(
+                image,
+                output_type=pytesseract.Output.DICT,
+                config="--psm 0 -c -min_characters_to_try=5",
+            )
+            angle_to_rotate = osd["rotate"]
 
-@dataclass
-class Code(FileRecord):
-    """Code content"""
+            if angle_to_rotate != 0:
+                image = image.rotate(angle_to_rotate, expand=True)
 
-    @with_temporary_copy
-    def _process(self):
-        pass
+        except pytesseract.pytesseract.TesseractError as e:
+            print("Error:", e)
+
+        finally:
+            return pytesseract.image_to_string(image)
 
 
 @dataclass
 class UnknownContent(FileRecord):
-    """Unknown content [Else]"""
+    """Unknown Type Fallback"""
 
     @with_temporary_copy
     def _process(self):
-        pass
+        raise NotImplementedError(f"Unknown File Type")
