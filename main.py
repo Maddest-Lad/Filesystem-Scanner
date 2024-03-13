@@ -16,7 +16,7 @@ if __name__ == "__main__":
     test_path = Path("test")
     
     # Main Queue
-    queue = Queue()
+    queue = [] #Queue()
 
     #Testing
     for file in walk(test_path):
@@ -25,17 +25,14 @@ if __name__ == "__main__":
             
             # Text Files
             case ".txt" | ".md" | ".log":
-                queue.put(RawText(file))
-
-            # Documents
-            case ".pdf" | ".docx" | ".odt": 
-                pass
-
-            # Code
-            case ".py" | ".c" | ".h" | ".cpp" | ".java" | ".js" | ".html" | ".css" | ".xml" | ".json" | ".yaml" | ".yml":
-                pass
+                queue.append(RawText(file))
                 
             # Default
             case _:
-                queue.put(UnknownContent(file))
+                queue.append(UnknownContent(file))
+
+    # Process Queue
+    for item in queue:
+        print(repr(item))
+
 
