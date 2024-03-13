@@ -1,0 +1,8 @@
+LANG_KEYWORD_MAP = {
+    {".py"} : {"import", "from", "def", "class", "if", "else", "elif", "while", "for", "in", "as", "with", "try", "except", "finally", "raise", "assert", "return", "yield", "lambda", "nonlocal", "global", "del", "pass", "break", "continue", "and", "or", "not", "is", "in", "if", "else", "elif", "while", "for", "as", "with", "try", "except", "finally", "raise", "assert", "return", "yield", "lambda", "nonlocal", "global", "del", "pass", "break", "continue", "and", "or", "not", "is", "in", "if", "else", "elif", "while", "for", "as", "with", "try", "except", "finally", "raise", "assert", "return", "yield", "lambda", "nonlocal", "global", "del", "pass", "break", "continue", "and", "or", "not", "is", "in", "if", "else", "elif", "while", "for", "as", "with", "try", "except", "finally", "raise", "assert", "return", "yield", "lambda", "nonlocal", "global", "del", "pass", "break", "continue", "and", "or", "not", "is", "in", "if", "else", "elif", "while", "for", "as", "with", "try", "except", "finally", "raise", "assert", "return", "yield", "lambda", "nonlocal", "global", "del", "pass", "break", "continue", "and", "or", "not", "is", "in", "if", "else", "elif", "while", "for", "as", "with", "try", "except", "finally", "raise", "assert", "return", "yield", "lambda", "nonlocal", "global", "del", "pass", "break", "continue", "and", "or", "not", "is", "in", "if", "else"},
+    {".java"} : {},
+    {".c", ".h", ".cpp"} : {},
+    {".js"} : {},
+    {".html", ".css", ".xml"} : {},
+    {".json"} : {}
+}

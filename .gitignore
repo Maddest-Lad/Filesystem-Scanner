@@ -1,0 +1,4 @@
+# Environment
+test/
+venv/
+__pycache__/
