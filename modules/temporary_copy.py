@@ -8,7 +8,7 @@ import shutil
 def _temporary_copy(path):
     """Context manager for handling temporary copies of files"""
     original_path = Path(path)
-    with tempfile.NamedTemporaryFile(delete=False, dir=tempfile.gettempdir(), prefix=original_path.name, suffix='.tmp') as temp_file:
+    with tempfile.NamedTemporaryFile(delete=False, dir=tempfile.gettempdir(), prefix=original_path.name) as temp_file:
         shutil.copy(original_path, temp_file.name)
         yield Path(temp_file.name)  # Yield temporary path for use in with block
     Path(temp_file.name).unlink()  # Ensure the temporary file is deleted
