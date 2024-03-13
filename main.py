@@ -26,7 +26,9 @@ if __name__ == "__main__":
             # Text Files
             case ".txt" | ".md" | ".log":
                 queue.append(RawText(file))
-                
+            
+            case ".docx":
+            
             # Default
             case _:
                 queue.append(UnknownContent(file))
