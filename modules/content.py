@@ -11,6 +11,7 @@ from docx import Document as Docx
 from PIL import Image
 import pytesseract
 
+from modules.utils import open_with_auto_encoding
 from modules.temporary_copy import with_temporary_copy
 
 
@@ -19,7 +20,7 @@ class FileRecord(ABC):
     """Parent dataclass for all content types"""
 
     path: Path
-    content: Optional[any] = field(default=None, init=False)
+    content: Optional[Any] = field(default=None, init=False)
 
     # Metadata
     name: Optional[str] = field(default=None, init=False)
@@ -31,7 +32,7 @@ class FileRecord(ABC):
     @property
     def content(self):
         if not self.content:
-            self.content = self.process()
+            self.content = self._process()
         return self.content
 
     @abstractmethod
@@ -59,7 +60,7 @@ class RawText(FileRecord):
 
     @with_temporary_copy
     def _process(self):
-        with open(self.path, "r") as f:
+        with open_with_auto_encoding(self.path, "r") as f:
             return f.read()
 
 
@@ -69,15 +70,13 @@ class StructuredText(FileRecord):
 
     @with_temporary_copy
     def _process(self):
-        match self.type:
-            case ".json":
-                with open(self.path, "r") as f:
+        with open_with_auto_encoding(self.path, "r") as f:
+            match self.type:
+                case ".json":
                     return json.load(f)
-            case ".xml":
-                with open(self.path, "r") as f:
+                case ".xml":
                     return xmltodict.parse(f.read())
-            case ".csv" | ".tsv":
-                with open(self.path, "r") as f:
+                case ".csv" | ".tsv":
                     return list(csv.reader(f))
 
 
@@ -87,13 +86,10 @@ class Document(FileRecord):
 
     @with_temporary_copy
     def _process(self):
-
         match self.path.type:
-
             case ".docx" | ".doc":
                 doc = Docx(self.path)
                 return "\n".join([p.text for p in doc.paragraphs])
-
             case ".pptx" | ".ppt":
                 raise NotImplementedError("PowerPoint files are not yet supported")
 
@@ -131,4 +127,11 @@ class UnknownContent(FileRecord):
 
     @with_temporary_copy
     def _process(self):
-        raise NotImplementedError(f"Unknown File Type")
+        try:
+            with open_with_auto_encoding(self.path) as f:
+                return f.read()
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+        finally:
+            f.close()
